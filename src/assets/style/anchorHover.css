@@ -1,0 +1,58 @@
+.anchorHoverListWrapper {
+  margin: 0 auto;
+  max-width: 640px;
+  position: relative;
+}
+
+.anchorHoverList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.anchorHoverListItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 80px;
+  padding: 24px 16px;
+  font-size: 24px;
+  line-height: 1.2;
+  border-bottom: 1px solid var(--color-text);
+  transition: color 0.3s 0.05s var(--ease-out-quart);
+}
+
+/* 背景の非ホバー時のスタイル */
+.anchorHoverListBackground {
+  position: absolute;
+  z-index: -1;
+  background-color: var(--color-text);
+  top: 0;
+  left: anchor(left);
+  position-anchor: --anchor-hover;
+  scale: 1 0;
+  width: 100%;
+  height: 80px;
+  transform-origin: center center;
+  transition:
+    top 0s 1s,
+    scale 0.5s var(--ease-out-quart);
+}
+
+/* ホバー時 */
+.anchorHoverListItem:hover {
+  anchor-name: --anchor-hover; /** ホバーしたものをアンカーに指定 */
+  color: #fff;
+  transition: color 0.6s 0.1s var(--ease-out-quart);
+}
+
+/* リスト上にホバーしていたら、その位置へ背景を移動させる */
+.anchorHoverListWrapper:has(.anchorHoverListItem:hover) {
+  .anchorHoverListBackground {
+    top: anchor(top);
+    scale: 1 1;
+    transition:
+      top 0.3s var(--ease-out-quart),
+      scale 0.3s 0.15s var(--ease-out-quart);
+  }
+}

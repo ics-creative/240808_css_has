@@ -1,0 +1,117 @@
+.hamburgerButton {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 3;
+  display: block;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  appearance: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.hamburgerButtonIcon {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  transition:
+    visibility 0.3s var(--ease-out-quart),
+    opacity 0.3s var(--ease-out-quart);
+}
+
+.openIcon {
+  visibility: visible;
+  opacity: 1;
+}
+
+.closeIcon {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.hamburgerButtonText {
+  position: absolute;
+  top: 34px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.sidePanelBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  background-color: rgb(0 0 0 / 50%);
+  opacity: 0;
+  transition:
+    visibility 0.3s var(--ease-out-quart),
+    opacity 0.3s var(--ease-out-quart);
+}
+
+.sidePanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: 280px;
+  height: 100%;
+  background-color: #fff;
+  transition: transform 0.5s var(--ease-out-quart);
+  transform: translateX(100%);
+  box-shadow: -4px 0 12px 4px rgb(0 0 0 / 10%);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 40px;
+  padding: 0 32px;
+  margin-top: 120px;
+
+  li {
+    list-style: none;
+
+    a {
+      display: block;
+      font-size: 22px;
+      color: var(--color-text);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* メニューが開いている場合の制御 */
+.hamburgerAndPanel:has(.hamburgerButton.isOpen) {
+  /* 開アイコンは非表示に、閉アイコンが表示 */
+  .openIcon {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .closeIcon {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* サイドパネルと背景を開く */
+  .sidePanelBackdrop {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .sidePanel {
+    transform: translateX(0);
+  }
+}

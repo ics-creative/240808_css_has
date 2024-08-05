@@ -1,0 +1,77 @@
+.boxesWrapper {
+  margin-top: 48px;
+}
+.performanceBoxWrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-rows: auto;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px 10px;
+}
+
+.performanceBox {
+  display: grid;
+  place-items: center;
+  max-width: 200px;
+  max-height: 200px;
+  aspect-ratio: 1;
+  background-color: #cfe8f3;
+  position: relative;
+  height: 100%;
+}
+
+.target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #30508a;
+  color: #fff;
+  text-decoration: none;
+}
+
+.controlArea {
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.performanceController {
+  max-width: 400px;
+  display: grid;
+  grid-template: 1fr 1fr / 80px 1fr 50px;
+  gap: 16px 24px;
+  margin-bottom: 32px;
+}
+
+.controllerLabel {
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  grid-column: 1/4;
+}
+
+.hierarchyWrapper {
+  grid-column: 2/4;
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  justify-content: space-between;
+}
+
+.labelName {
+  grid-column: 1/2;
+}
+
+.controllerRange {
+  width: 100%;
+  grid-column: 2/3;
+}
+
+.controllerInput {
+  grid-column: 3/4;
+  width: 50px;
+  font-size: 16px;
+}

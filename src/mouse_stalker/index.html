@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/assets/images/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/style/style.scss" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Noto+Color+Emoji&display=swap"
+      rel="stylesheet"
+    />
+    <title>CSSで作ったマウスストーカー | :has()を使ったCSS表現テクニック</title>
+  </head>
+  <body class="mouseStalkerArea">
+    <div class="mainContents">
+      <div class="mouseStalker" id="mouseStalker"></div>
+      <a href="#" class="basicButton">
+        <span>中にタグを内包するaタグ</span>
+      </a>
+      <p class="backToIndex">
+        <a href="../">一覧に戻る</a>
+      </p>
+    </div>
+
+    <script>
+      const mouseStalkerElement = document.querySelector("#mouseStalker");
+
+      // NGなホバーイベント
+      const handleLinkHoverNg = (event) => {
+        mouseStalkerElement.style.translate = `${event.clientX}px ${event.clientY}px`;
+        // ホバーした先がaタグだった場合はクラスを付与
+        event.target.tagName === "A"
+          ? mouseStalkerElement.classList.add("isLinkHover")
+          : mouseStalkerElement.classList.remove("isLinkHover");
+      };
+
+      document.addEventListener("mousemove", (event) => {
+        mouseStalkerElement.style.translate = `${event.clientX}px ${event.clientY}px`;
+      });
+    </script>
+  </body>
+</html>

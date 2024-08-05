@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/images/favicon.png" />
+    <link rel="stylesheet" href="/assets/style/style.scss" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Noto+Color+Emoji&display=swap"
+      rel="stylesheet"
+    />
+    <title>
+      has()クエリーのパフォーマンス（Canvas） | Anchor Positioningとの組み合わせ
+    </title>
+  </head>
+  <body style="--color-text: #fff">
+    <div class="wrapper">
+      <div class="">
+        <div id="vueApp">
+          <div class="mainContents">
+            <div class="controlArea">
+              <div class="performanceController">
+                <div class="labelName">Div階層数</div>
+                <div class="hierarchyWrapper">
+                  <label class="hierarchyLabel" v-for="value in hierarchyList">
+                    <input
+                      type="radio"
+                      :value="value"
+                      v-model.number="hierarchy"
+                    />
+                    <span>{{value}}</span>
+                  </label>
+                </div>
+                <label class="controllerLabel">
+                  <span class="labelName">配置数</span>
+                  <input
+                    type="range"
+                    min="1"
+                    max="1000"
+                    v-model="loop"
+                    class="controllerRange"
+                  />
+                  <span
+                    ><input
+                      type="text"
+                      v-model.number="loop"
+                      class="controllerInput"
+                  /></span>
+                </label>
+              </div>
+              <p>真ん中の紺色の四角がaタグの領域です</p>
+              <p>※大きな数にすると負荷が高くなるので注意してください</p>
+            </div>
+
+            <p class="backToIndex">
+              <a href="../">一覧に戻る</a>
+            </p>
+          </div>
+
+          <div class="boxesWrapper">
+            <div class="performanceBoxWrapper">
+              <div v-for="item in loopList" class="performanceBoxWrapper">
+                <!--階層-->
+                <recursive-component :level="hierarchy/2" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="canvasApp"></div>
+    </div>
+
+    <script type="module">
+      import { Application, Assets, Container, Sprite, Color } from "pixi.js";
+      import { createApp, ref, computed } from "/assets/script/vue.js";
+      import { nextTick, watchEffect } from "../assets/script/vue.js";
+      import particleImageSrc from "/assets/images/particle.png";
+
+      // デフォルトのパーティクル設定
+      const defaultSettings = {
+        particleNum: 2,
+        lifetime: 100,
+        size: 16,
+        scaleVariance: 0.2,
+        yVariance: 30,
+        xVariance: 30,
+        vyVariance: 0.1,
+        vxVariance: 0.2,
+        alpha: 0.5,
+      };
+
+      // パーティクルの設定
+      let particleSettings = { ...defaultSettings };
+
+      // マウス座標
+      const mousePosition = { x: 0, y: 0 };
+
+      const appContainer = document.querySelector("#canvasApp");
+
+      // キャンバスの初期化
+      const app = new Application();
+      await app.init({
+        resizeTo: appContainer,
+        backgroundAlpha: 0,
+      });
+
+      // キャンバスをDOMに追加
+      appContainer.appendChild(app.canvas);
+
+      // パーティクルの画像の読み込み
+      const particleImage = await Assets.load(particleImageSrc);
+
+      // パーティクルのスプライトを作成
+      const particleContainer = new Container();
+
+      // スプライトを追加
+      app.stage.addChild(particleContainer);
+
+      const particles = [];
+
+      /**
+       * パーティクルを発生する
+       */
+      const emitParticle = () => {
+        for (let i = 0; i < particleSettings.particleNum; i++) {
+          const sprite = new Sprite({
+            texture: particleImage,
+            blendMode: "screen",
+          });
+          sprite.setSize(16, 16);
+          sprite.anchor.set(0.5);
+          sprite.tint = new Color({
+            h: 51 + (Math.random() - 0.5) * 30,
+            s: 54,
+            l: 58,
+          });
+          sprite.scale = Math.random() * particleSettings.scaleVariance + 0.05;
+          sprite.vy = Math.random() * particleSettings.vyVariance;
+          sprite.vx = Math.random() * particleSettings.vxVariance;
+          // 座標は0.5付近に偏らせる乱数
+          sprite.x =
+            mousePosition.x +
+            ((Math.random() + Math.random()) / 2 - 0.5) *
+              particleSettings.yVariance;
+          sprite.y =
+            mousePosition.y +
+            ((Math.random() + Math.random()) / 2 - 0.5) *
+              particleSettings.xVariance;
+          sprite.alpha = 0.5;
+          // パーティクルを生存時間とともに格納
+          particles.push({ sprite, lifetime: particleSettings.lifetime });
+          // パーティクルをコンテナーに格納
+          particleContainer.addChild(sprite);
+        }
+      };
+
+      /**
+       * パーティクルを更新する
+       */
+      const updateParticle = () => {
+        for (let i = 0; i < particles.length; i++) {
+          const particle = particles[i];
+          // パーティクルの位置は加速度とに応じて変化
+          particle.sprite.x += particle.sprite.vx;
+          particle.sprite.y += particle.sprite.vy;
+          particle.sprite.alpha -=
+            particleSettings.alpha / particleSettings.lifetime;
+          particle.lifetime--;
+          if (particle.lifetime <= 0) {
+            particleContainer.removeChild(particle.sprite);
+            particles.splice(i, 1);
+          }
+        }
+      };
+
+      // tickerで更新
+      app.ticker.add(() => {
+        emitParticle();
+        updateParticle();
+      });
+
+      document.addEventListener("mousemove", (event) => {
+        // マウス座標を更新し、パーティクルの発生位置を変更
+        mousePosition.x = event.pageX;
+        mousePosition.y = event.pageY;
+
+        const isATagHovered = document.querySelector("body:has(a:hover)");
+
+        if (isATagHovered) {
+          // ホバー時はパーティクルの設定を変更
+          particleSettings = {
+            ...defaultSettings,
+            particleNum: 4,
+            xVariance: 70,
+            yVariance: 70,
+          };
+        } else {
+          // それ以外のときはデフォルトの設定に戻す
+          particleSettings = { ...defaultSettings };
+        }
+      });
+
+      let prevScrollTop = 0;
+
+      document.addEventListener("scroll", () => {
+        const scrollTop = document.documentElement.scrollTop;
+        const deltaY = scrollTop - prevScrollTop;
+        mousePosition.y += deltaY;
+        prevScrollTop = scrollTop;
+      });
+
+      // 再帰的にdivを生成するコンポーネント。最下層にaタグを配置
+      const recursiveComponent = {
+        name: "recursive-component",
+        setup() {
+          return undefined;
+        },
+        template: `
+          <div class="performanceBox">
+            <div v-if="level > 1">
+              <recursive-component :level="level - 1" />
+            </div>
+            <div v-else>
+              <a href="#" class="target" >&lt;a&gt;</a>
+            </div>
+          </div>
+        `,
+        props: {
+          level: {
+            type: Number,
+            required: true,
+          },
+        },
+      };
+
+      const vueApp = createApp({
+        setup() {
+          const hierarchyList = [10, 20, 50, 100];
+          const hierarchy = ref(10);
+          const loop = ref(10);
+          const loopList = computed(() =>
+            Array.from({ length: loop.value }, (_, i) => i),
+          );
+
+          watchEffect(() => {
+            console.log("loop", loop.value, "hierarchy", hierarchy.value);
+            nextTick(() => {
+              app.resize();
+            });
+          });
+
+          return { loop, hierarchyList, hierarchy, loopList };
+        },
+      });
+      vueApp.component("recursiveComponent", recursiveComponent);
+      vueApp.mount("#vueApp");
+    </script>
+  </body>
+</html>

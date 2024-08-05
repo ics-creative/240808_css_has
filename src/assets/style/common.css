@@ -1,0 +1,54 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-text: #333;
+  --color-primary: #18514c;
+  --color-bg: #ebebeb;
+  --color-alert: #ce3e17;
+  --color-alert-placeholder: #e7b4ae;
+  --color-alert-bg: #ffebe6;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  font-family: "BIZ UDPGothic", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  width: 340px;
+  margin: 0 auto;
+}
+
+.backToIndex {
+  margin-top: 80px;
+  text-align: center;
+  a {
+    color: var(--color-text);
+  }
+}
+
+.index {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+  width: 340px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.mainContents {
+  padding-top: 48px;
+  max-width: 640px;
+  margin: 0 auto;
+}

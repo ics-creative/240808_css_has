@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/assets/images/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/style/style.scss" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Noto+Color+Emoji&display=swap"
+      rel="stylesheet"
+    />
+    <title>
+      has()クエリーのパフォーマンス（CSS） | has()を使ったCSS表現テクニック
+    </title>
+  </head>
+  <body>
+    <div class="mouseStalker" id="mouseStalker"></div>
+
+    <div id="app" v-cloak>
+      <div class="mainContents">
+        <div class="controlArea">
+          <div class="performanceController">
+            <div class="labelName">Div階層数</div>
+            <div class="hierarchyWrapper">
+              <label class="hierarchyLabel" v-for="value in hierarchyList">
+                <input type="radio" :value="value" v-model.number="hierarchy" />
+                <span>{{value}}</span>
+              </label>
+            </div>
+            <label class="controllerLabel">
+              <span class="labelName">配置数</span>
+              <input
+                type="range"
+                min="1"
+                max="1000"
+                v-model="loop"
+                class="controllerRange"
+              />
+              <span
+                ><input
+                  type="text"
+                  v-model.number="loop"
+                  class="controllerInput"
+              /></span>
+            </label>
+          </div>
+          <p>真ん中の紺色の四角がaタグの領域です</p>
+          <p>※大きな数にすると負荷が高くなるので注意してください</p>
+        </div>
+
+        <p class="backToIndex">
+          <a href="../">一覧に戻る</a>
+        </p>
+      </div>
+
+      <div class="boxesWrapper">
+        <div class="performanceBoxWrapper">
+          <div v-for="item in loopList" class="performanceBoxWrapper">
+            <!--階層-->
+            <recursive-component :level="hierarchy/2" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createApp, ref, computed } from "/assets/script/vue.js";
+
+      // 再帰的にdivを生成するコンポーネント。最下層にaタグを配置
+      const recursiveComponent = {
+        name: "recursive-component",
+        setup() {
+          return undefined;
+        },
+        template: `
+          <div class="performanceBox">
+            <div v-if="level > 1">
+              <recursive-component :level="level - 1" />
+            </div>
+            <div v-else>
+              <a href="#" class="target" >&lt;a&gt;</a>
+            </div>
+          </div>
+        `,
+        props: {
+          level: {
+            type: Number,
+            required: true,
+          },
+        },
+      };
+
+      const app = createApp({
+        setup() {
+          const hierarchyList = [10, 20, 50, 100];
+          const hierarchy = ref(10);
+          const loop = ref(10);
+          const loopList = computed(() =>
+            Array.from({ length: loop.value }, (_, i) => i),
+          );
+
+          return { loop, hierarchyList, hierarchy, loopList };
+        },
+      });
+      app.component("recursiveComponent", recursiveComponent);
+      app.mount("#app");
+
+      const mouseStalkerElement = document.querySelector("#mouseStalker");
+
+      const handleLinkHover = () => {
+        const hasHover = document.querySelector("body:has(a:hover)");
+        hasHover
+          ? mouseStalkerElement.classList.add("isLinkHover")
+          : mouseStalkerElement.classList.remove("isLinkHover");
+      };
+      document.addEventListener("mousemove", (event) => {
+        mouseStalkerElement.style.translate = `${event.clientX}px ${event.clientY}px`;
+        handleLinkHover(event);
+      });
+    </script>
+  </body>
+</html>

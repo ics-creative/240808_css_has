@@ -1,0 +1,55 @@
+.fromWrapper {
+  display: grid;
+  grid-template: 1fr auto / 60px 1fr;
+  column-gap: 16px;
+  row-gap: 8px;
+  align-items: center;
+}
+
+.formLabel {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.textForm {
+  width: 240px;
+  height: 40px;
+  padding: 4px 16px;
+  appearance: none;
+  background-color: var(--color-bg);
+  border: none;
+  border-bottom: 1px solid var(--color-primary);
+  border-radius: 0;
+}
+
+.errorMessage {
+  grid-column: 2/3;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--color-alert);
+  display: none;
+}
+
+/* エラーがある場合 */
+.fromWrapper:has(.textForm:user-invalid) {
+  /* ラベルを赤くする */
+  .formLabel {
+    color: var(--color-alert);
+  }
+  /* エラーメッセージを表示する */
+  .errorMessage {
+    display: block;
+  }
+}
+
+/* 入力フォームを赤くする */
+.textForm:user-invalid {
+  background-color: var(--color-alert-bg);
+  border-color: var(--color-alert);
+  color: var(--color-alert);
+}
+
+/* プレースホルダーも赤くする */
+.textForm:user-invalid::placeholder {
+  color: var(--color-alert-placeholder);
+}
