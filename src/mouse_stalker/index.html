@@ -27,9 +27,8 @@
     <script>
       const mouseStalkerElement = document.querySelector("#mouseStalker");
 
-      // NGなホバーイベント
+      // NGなホバーイベント例。これを使っても内部にspanタグがある場合にはうまくいかないので使用しません
       const handleLinkHoverNg = (event) => {
-        mouseStalkerElement.style.translate = `${event.clientX}px ${event.clientY}px`;
         // ホバーした先がaタグだった場合はクラスを付与
         event.target.tagName === "A"
           ? mouseStalkerElement.classList.add("isLinkHover")
