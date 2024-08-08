@@ -12,9 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Noto+Color+Emoji&display=swap"
       rel="stylesheet"
     />
-    <title>
-      キャンバスで作ったマウスストーカー | :has()を使ったCSS表現テクニック
-    </title>
+    <title>キャンバスで作ったマウスストーカー | :has()を使ったCSS表現テクニック</title>
   </head>
   <body>
     <div class="wrapper">
@@ -101,12 +99,10 @@
           // 座標は0.5付近に偏らせる乱数
           sprite.x =
             mousePosition.x +
-            ((Math.random() + Math.random()) / 2 - 0.5) *
-              particleSettings.yVariance;
+            ((Math.random() + Math.random()) / 2 - 0.5) * particleSettings.yVariance;
           sprite.y =
             mousePosition.y +
-            ((Math.random() + Math.random()) / 2 - 0.5) *
-              particleSettings.xVariance;
+            ((Math.random() + Math.random()) / 2 - 0.5) * particleSettings.xVariance;
           sprite.alpha = 0.5;
           // パーティクルを生存時間とともに格納
           particles.push({ sprite, lifetime: particleSettings.lifetime });
@@ -124,8 +120,7 @@
           // パーティクルの位置は加速度とに応じて変化
           particle.sprite.x += particle.sprite.vx;
           particle.sprite.y += particle.sprite.vy;
-          particle.sprite.alpha -=
-            particleSettings.alpha / particleSettings.lifetime;
+          particle.sprite.alpha -= particleSettings.alpha / particleSettings.lifetime;
           particle.lifetime--;
           if (particle.lifetime <= 0) {
             particleContainer.removeChild(particle.sprite);

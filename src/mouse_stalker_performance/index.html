@@ -11,9 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@700&family=Noto+Color+Emoji&display=swap"
       rel="stylesheet"
     />
-    <title>
-      has()クエリーのパフォーマンス（CSS） | has()を使ったCSS表現テクニック
-    </title>
+    <title>has()クエリーのパフォーマンス（CSS） | has()を使ったCSS表現テクニック</title>
   </head>
   <body>
     <div class="mouseStalker" id="mouseStalker"></div>
@@ -31,19 +29,8 @@
             </div>
             <label class="controllerLabel">
               <span class="labelName">配置数</span>
-              <input
-                type="range"
-                min="1"
-                max="1000"
-                v-model="loop"
-                class="controllerRange"
-              />
-              <span
-                ><input
-                  type="text"
-                  v-model.number="loop"
-                  class="controllerInput"
-              /></span>
+              <input type="range" min="1" max="1000" v-model="loop" class="controllerRange" />
+              <span><input type="text" v-model.number="loop" class="controllerInput" /></span>
             </label>
           </div>
           <p>真ん中の紺色の四角がaタグの領域です</p>
@@ -97,9 +84,7 @@
           const hierarchyList = [10, 20, 50, 100];
           const hierarchy = ref(10);
           const loop = ref(10);
-          const loopList = computed(() =>
-            Array.from({ length: loop.value }, (_, i) => i),
-          );
+          const loopList = computed(() => Array.from({ length: loop.value }, (_, i) => i));
 
           return { loop, hierarchyList, hierarchy, loopList };
         },
